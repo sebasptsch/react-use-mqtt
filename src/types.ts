@@ -1,4 +1,4 @@
-import {Client, ConnectionOptions} from 'paho-mqtt';
+import {Client, ConnectionOptions, Message} from 'paho-mqtt';
 
 export interface Error {
   name: string;
@@ -10,14 +10,14 @@ export interface MqttProviderProps {
   brokerUrl: string;
   clientId: string;
   options?: ConnectionOptions;
-  parserMethod?: (message) => string;
+  parserMethod?: (message: Message) => string;
   children: React.ReactNode;  
 }
 
 export interface ConnectorProps {
   brokerUrl: string;
   options?: ConnectionOptions;
-  parserMethod?: (message) => string;
+  parserMethod?: (message: Message) => string;
   children: React.ReactNode;
 }
 

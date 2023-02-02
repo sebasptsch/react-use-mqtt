@@ -1,0 +1,32 @@
+name: Publish Package to npmjs
+on:
+  release:
+    types: [created]
+jobs:
+  build:
+    permissions:
+      packages: write
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        name: Checkout
+      - uses: actions/setup-node@v3
+        name: Setup Node
+        with:
+          always-auth: true
+          cache: "yarn"
+          node-version: "16.x"
+          registry-url: "https://registry.npmjs.org"
+
+      - run: yarn install --frozen-lockfile
+        name: Install Dependancies
+      - run: yarn tsc
+        name: Type Check
+      - run: yarn build
+        name: Build
+
+      # Publish NPM
+      - run: yarn publish
+        name: Publish to NPMJS
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.YARN_TOKEN }}

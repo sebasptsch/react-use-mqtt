@@ -10,7 +10,7 @@ import {
   MqttProviderProps,
 } from "./types";
 
-export default function Connector({
+export default function Provider({
   children,
   brokerUrl,
   clientId,

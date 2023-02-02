@@ -16,6 +16,9 @@
       "require": "./dist/index.js"
     }
   },
+  "scripts": {
+    "build": "tsup"
+  },
   "dependencies": {
     "mqtt-pattern": "^2.0.0",
     "paho-mqtt": "^1.1.0",
