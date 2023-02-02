@@ -1,57 +1,32 @@
 import { useContext, useEffect, useCallback, useState } from 'react';
 
-import { OnMessageHandler, SubscribeOptions } from 'paho-mqtt';
+import { IClientSubscribeOptions } from 'precompiled-mqtt';
 import { matches } from 'mqtt-pattern';
 
 import MqttContext from './Context';
-import { IMqttContext as Context, IUseSubscription, IMessage } from './types';
+import { IMqttContext as Context, IUseSubscription, IMessage, MessageArguments } from './types';
 
-/**
- * A hook to subscribe to a topic
- * @todo Add support for multiple subscription hooks
- * @param topic The topic/topics to subscribe to
- * @param options The options to subscribe with
- * @returns The message, client and connection status
- */
 export default function useSubscription(
   topic: string | string[],
-  options: SubscribeOptions = {} as SubscribeOptions,
+  options: IClientSubscribeOptions = {} as IClientSubscribeOptions,
 ): IUseSubscription {
-  const { client, connectionStatus, parserMethod } = useContext<Context>(
+  const { client, connectionStatus, parserMethod, error } = useContext<Context>(
     MqttContext,
   );
 
   const [message, setMessage] = useState<IMessage | undefined>(undefined);
 
   const subscribe = useCallback(async () => {
-    if (Array.isArray(topic)) {
-        await Promise.all(
-            topic.map(t => client?.subscribe(t, options)),
-        );
-    } else {
-        client?.subscribe(topic, options);
-    }
-   
+    client?.subscribe(topic, options);
   }, [client, options, topic]);
 
-  const unsubscribe = useCallback(async () => {
-    if (Array.isArray(topic)) {
-        await Promise.all(
-            topic.map(t => client?.unsubscribe(t)),
-        );
-    } else {
-        client?.unsubscribe(topic);
-    }
-    }, [client, options, topic]);
-
-
-  const callback: OnMessageHandler = useCallback(
-    ({destinationName, payloadString}) => {
-      if ([topic].flat().some(rTopic => matches(rTopic, destinationName))) {
+  const callback = useCallback(
+    (...args: MessageArguments) => {
+      if ([topic].flat().some(rTopic => matches(rTopic, args[0]))) {
         setMessage({
-          topic: destinationName,
+          topic: args[0],
           message:
-            parserMethod?.(payloadString) || payloadString.toString(),
+            parserMethod?.(...args) || args[1].toString(),
         });
       }
     },
@@ -59,16 +34,13 @@ export default function useSubscription(
   );
 
   useEffect(() => {
-    if (client?.isConnected()) {
+    if (client?.connected) {
       subscribe();
 
-      client.onMessageArrived = callback;
+      client.on('message', callback);
     }
     return () => {
-      if (client?.isConnected()) {
-        unsubscribe();
-        client.onMessageArrived = () => null;
-      }
+      client?.off('message', callback);
     };
   }, [callback, client, subscribe]);
 
@@ -77,5 +49,6 @@ export default function useSubscription(
     topic,
     message,
     connectionStatus,
+    error
   };
 }

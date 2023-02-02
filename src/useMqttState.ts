@@ -4,7 +4,7 @@ import MqttContext from './Context';
 import { IMqttContext as Context } from './types';
 
 export default function useMqttState() {
-  const { connectionStatus, client, parserMethod } = useContext<Context>(
+  const { connectionStatus, client, parserMethod, error } = useContext<Context>(
     MqttContext,
   );
 
@@ -12,5 +12,6 @@ export default function useMqttState() {
     connectionStatus,
     client,
     parserMethod,
+    error
   };
 }

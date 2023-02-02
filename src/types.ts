@@ -1,4 +1,4 @@
-import {Client, ConnectionOptions, Message} from 'paho-mqtt';
+import { MqttClient, IClientOptions, OnMessageCallback } from 'precompiled-mqtt';
 
 export interface Error {
   name: string;
@@ -6,25 +6,26 @@ export interface Error {
   stack?: string;
 }
 
-export interface MqttProviderProps {
-  brokerUrl: string;
-  clientId: string;
-  options?: ConnectionOptions;
-  parserMethod?: (message: Message) => string;
-  children: React.ReactNode;  
+export enum ConnectionStatus {
+  Connected = 'Connected',
+  Connecting = 'Connecting',
+  Reconnecting = 'Reconnecting',
+  Offline = 'Offline',
+  Error = 'Error',
 }
 
 export interface ConnectorProps {
   brokerUrl: string;
-  options?: ConnectionOptions;
-  parserMethod?: (message: Message) => string;
+  options?: IClientOptions;
+  parserMethod?: (...message: MessageArguments) => string;
   children: React.ReactNode;
 }
 
 export interface IMqttContext {
-  connectionStatus: string | Error;
-  client?: Client | null;
-  parserMethod?: (message: any) => string;
+  connectionStatus: ConnectionStatus;
+  error?: Error;
+  client?: MqttClient | null;
+  parserMethod?: (...message: MessageArguments) => string;
 }
 
 export interface IMessageStructure {
@@ -38,9 +39,14 @@ export interface IMessage {
 
 export interface IUseSubscription {
   topic: string | string[];
-  client?: Client | null;
+  client?: MqttClient | null;
   message?: IMessage;
-  connectionStatus: string | Error;
+  connectionStatus: ConnectionStatus;
+  error?: Error;
 }
 
 export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
+
+type ArgumentTypes<F extends Function> = F extends (...args: infer A) => any ? A : never;
+
+export type MessageArguments = ArgumentTypes<OnMessageCallback>;

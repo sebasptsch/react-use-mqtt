@@ -1,7 +1,7 @@
 {
   "name": "react-use-mqtt",
   "version": "1.0.0",
-  "description": "React Library for interfacing with the MQTT Paho Library using hooks",
+  "description": "React Library for interfacing with the MQTT.js Library using hooks",
   "repository": "git@github.com:sebasptsch/react-use-mqtt",
   "author": "Sebastian Pietschner <sebastian.pietschner@gmail.com>",
   "license": "MIT",
@@ -21,12 +21,11 @@
   },
   "dependencies": {
     "mqtt-pattern": "^2.0.0",
-    "paho-mqtt": "^1.1.0",
+    "precompiled-mqtt": "^4.3.14-beta",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
   },
   "devDependencies": {
-    "@types/paho-mqtt": "^1.0.6",
     "@types/react": "^18.0.27",
     "tsup": "^6.5.0",
     "typescript": "^4.9.5"
