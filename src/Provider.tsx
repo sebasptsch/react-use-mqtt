@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useMemo, useRef } from 'react';
 
-import { connect, MqttClient } from 'precompiled-mqtt';
+import MQTT from 'precompiled-mqtt/dist/mqtt.browser.js';
 
 import MqttContext from './Context';
 import { Error, ConnectorProps, IMqttContext, ConnectionStatus } from './types';
@@ -17,7 +17,7 @@ export default function Connector({
   const clientValid = useRef(false);
   const [connectionStatus, setStatus] = useState<ConnectionStatus>(ConnectionStatus.Offline);
   const [error, setError] = useState<Error | undefined>();
-  const [client, setClient] = useState<MqttClient | null>(null);
+  const [client, setClient] = useState<MQTT.MqttClient | null>(null);
 
   useEffect(() => {
     if (!client && !clientValid.current) {
@@ -26,7 +26,7 @@ export default function Connector({
       clientValid.current = true;
       setStatus(ConnectionStatus.Connecting);
       console.log(`attempting to connect to ${brokerUrl}`);
-      const mqtt = connect(brokerUrl, options);
+      const mqtt = MQTT.connect(brokerUrl, options);
       mqtt.on('connect', () => {
         console.debug('on connect');
         setStatus(ConnectionStatus.Connected);

@@ -1,4 +1,4 @@
-import { MqttClient, IClientOptions, OnMessageCallback } from 'precompiled-mqtt';
+import type { MqttClient, IClientOptions, OnMessageCallback } from 'precompiled-mqtt';
 
 export interface Error {
   name: string;

@@ -22,11 +22,15 @@ jobs:
         name: Install Dependancies
       - run: yarn tsc
         name: Type Check
+      - name: Test
+        run: yarn test
       - run: yarn build
+        if: always()
         name: Build
 
       # Publish NPM
       - run: yarn publish
         name: Publish to NPMJS
+        if: always()
         env:
           NODE_AUTH_TOKEN: ${{ secrets.YARN_TOKEN }}

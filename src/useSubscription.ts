@@ -1,6 +1,6 @@
 import { useContext, useEffect, useCallback, useState } from 'react';
 
-import { IClientSubscribeOptions } from 'precompiled-mqtt';
+import type { IClientSubscribeOptions } from 'precompiled-mqtt';
 import { matches } from 'mqtt-pattern';
 
 import MqttContext from './Context';
