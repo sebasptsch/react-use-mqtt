@@ -1,46 +1,52 @@
-import { useContext, useEffect, useCallback, useState } from 'react';
+import { useContext, useEffect, useCallback, useState } from "react";
 
-import type { IClientSubscribeOptions } from 'precompiled-mqtt';
-import { matches } from 'mqtt-pattern';
+import { matches } from "mqtt-pattern";
 
-import MqttContext from './Context';
-import { IMqttContext as Context, IUseSubscription, IMessage, MessageArguments } from './types';
+import MqttContext from "./Context";
+import { IMqttContext as Context, IUseSubscription, IMessage } from "./types";
+import { Message } from "paho-mqtt";
 
 export default function useSubscription(
   topic: string | string[],
-  options: IClientSubscribeOptions = {} as IClientSubscribeOptions,
+  options: Paho.MQTT.SubscribeOptions = {} as Paho.MQTT.SubscribeOptions
 ): IUseSubscription {
-  const { client, connectionStatus, parserMethod, error } = useContext<Context>(
-    MqttContext,
-  );
+  const { client, connectionStatus, parserMethod, error } =
+    useContext<Context>(MqttContext);
 
   const [message, setMessage] = useState<IMessage | undefined>(undefined);
 
   const subscribe = useCallback(async () => {
-    client?.subscribe(topic, options);
+    if (Array.isArray(topic)) {
+      topic.forEach((t) => client?.subscribe(t, options));
+    } else {
+      client?.subscribe(topic, options);
+    }
   }, [client, options, topic]);
 
   const callback = useCallback(
-    (...args: MessageArguments) => {
-      if ([topic].flat().some(rTopic => matches(rTopic, args[0]))) {
+    (message: Message) => {
+      if (
+        [topic]
+          .flat()
+          .some((rTopic) => matches(rTopic, message.destinationName))
+      ) {
         setMessage({
-          topic: args[0],
-          message:
-            parserMethod?.(...args) || args[1].toString(),
+          topic: message.destinationName,
+          message: parserMethod?.(message) || message.payloadString,
         });
       }
     },
-    [parserMethod, topic],
+    [parserMethod, topic]
   );
 
   useEffect(() => {
-    if (client?.connected) {
+    if (client?.isConnected) {
       subscribe();
 
-      client.on('message', callback);
+      client.on("messageArrived", callback);
     }
     return () => {
-      client?.off('message', callback);
+      client?.off("messageArrived", callback);
     };
   }, [callback, client, subscribe]);
 
@@ -49,6 +55,6 @@ export default function useSubscription(
     topic,
     message,
     connectionStatus,
-    error
+    error,
   };
 }

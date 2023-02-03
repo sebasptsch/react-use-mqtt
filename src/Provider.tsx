@@ -1,23 +1,25 @@
 import React, { useEffect, useState, useMemo, useRef } from 'react';
 
-import MQTT from 'precompiled-mqtt/dist/mqtt.browser.js';
 
 import MqttContext from './Context';
 import { Error, ConnectorProps, IMqttContext, ConnectionStatus } from './types';
+import CustomClient from './CustomClient';
 
 
 
 export default function Connector({
   children,
-  brokerUrl,
-  options = { keepalive: 0 },
+  host,
+  port,
+  clientId,
+  options = { keepAliveInterval: 0 },
   parserMethod,
 }: ConnectorProps) {
   // Using a ref rather than relying on state because it is synchronous
   const clientValid = useRef(false);
   const [connectionStatus, setStatus] = useState<ConnectionStatus>(ConnectionStatus.Offline);
-  const [error, setError] = useState<Error | undefined>();
-  const [client, setClient] = useState<MQTT.MqttClient | null>(null);
+  const [error, setError] = useState<Paho.MQTT.ErrorWithInvocationContext | undefined>();
+  const [client, setClient] = useState<CustomClient | null>(null);
 
   useEffect(() => {
     if (!client && !clientValid.current) {
@@ -25,44 +27,37 @@ export default function Connector({
       // before the client is asynchronously set
       clientValid.current = true;
       setStatus(ConnectionStatus.Connecting);
-      console.log(`attempting to connect to ${brokerUrl}`);
-      const mqtt = MQTT.connect(brokerUrl, options);
-      mqtt.on('connect', () => {
+      console.log(`attempting to connect to ${host}:${port}`);
+      const mqtt = new CustomClient(host,port, clientId);
+      mqtt.connect(options)
+      mqtt.on('connected', () => {
         console.debug('on connect');
         setStatus(ConnectionStatus.Connected);
         setError(undefined);
         // For some reason setting the client as soon as we get it from connect breaks things
         setClient(mqtt);
       });
-      mqtt.on('reconnect', () => {
-        console.debug('on reconnect');
-        setStatus(ConnectionStatus.Reconnecting);
-        setError(undefined);
-      });
+    
       mqtt.on('error', err => {
         console.log(`Connection error: ${err}`);
         setStatus(ConnectionStatus.Error);
         setError(err);
       });
-      mqtt.on('offline', () => {
-        console.debug('on offline');
-        setStatus(ConnectionStatus.Offline);
-        setError(undefined);
-      });
-      mqtt.on('end', () => {
+
+      mqtt.on('connectionLost', () => {
         console.debug('on end');
         setStatus(ConnectionStatus.Offline);
         setError(undefined);
       });
     }
-  }, [client, clientValid, brokerUrl, options]);
+  }, [client, clientValid, host, port, options]);
 
   // Only do this when the component unmounts
   useEffect(
     () => () => {
       if (client) {
         console.log('closing mqtt client');
-        client.end(true);
+        client.disconnect()
         setClient(null);
         clientValid.current = false;
       }

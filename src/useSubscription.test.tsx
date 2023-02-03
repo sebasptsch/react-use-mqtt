@@ -7,7 +7,8 @@ import React from 'react';
 import { cleanup, renderHook, waitFor } from '@testing-library/react';
 
 import { MqttProvider, useSubscription } from '.';
-import { URL, options } from './connection';
+import {  HOST, options, PORT } from './connection';
+import { Message } from 'paho-mqtt';
 
 const TOPIC = 'mqtt/react/hooks/test';
 
@@ -16,7 +17,7 @@ let wrapper: React.FC<{children: React.ReactNode}>;
 describe('useSubscription', () => {
   beforeAll(() => {
     wrapper = ({ children }) => (
-      <MqttProvider brokerUrl={URL} options={options}>
+      <MqttProvider host={HOST} port={PORT} clientId="testing-mqtt-react-hooks">
         {children}
       </MqttProvider>
     );
@@ -32,12 +33,11 @@ describe('useSubscription', () => {
       },
     );
 
-    await waitFor(() => expect(result.current.client?.connected).toBe(true));
+    await waitFor(() => expect(result.current.client?.isConnected).toBe(true));
 
     const message = 'testing message';
-    result.current.client?.publish(TOPIC, message, (err: any) => {
-      expect(err).toBeFalsy()
-    });
+
+    result.current.client?.publish(TOPIC, message);
 
     await waitFor(() => expect(result.current?.message?.message).toBe(message));
   });
@@ -50,7 +50,7 @@ describe('useSubscription', () => {
       },
     );
 
-    await waitFor(() => expect(result.current.client?.connected).toBe(true));
+    await waitFor(() => expect(result.current.client?.isConnected).toBe(true));
 
     const message = 'testing single selection message';
 
@@ -70,7 +70,7 @@ describe('useSubscription', () => {
       },
     );
 
-    await waitFor(() => expect(result.current.client?.connected).toBe(true));
+    await waitFor(() => expect(result.current.client?.isConnected).toBe(true));
 
     const message = 'testing with # wildcard';
 

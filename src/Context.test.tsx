@@ -7,14 +7,14 @@ import React from 'react';
 import { renderHook, act, waitFor } from '@testing-library/react';
 
 import { useMqttState, MqttProvider, ConnectionStatus } from './';
-import { URL, options } from './connection';
+import { HOST, options, PORT } from './connection';
 
 let wrapper: React.FC<{children: React.ReactNode}>;
 
 describe('Connector wrapper', () => {
   beforeAll(() => {
     wrapper = ({ children }: {children: React.ReactNode}) => (
-      <MqttProvider brokerUrl={URL} options={options}>
+      <MqttProvider host={HOST} port={PORT} clientId="testing-mqtt-react-hooks">
         {children}
       </MqttProvider>
     );
@@ -24,8 +24,8 @@ describe('Connector wrapper', () => {
     const { result } = renderHook(() => useMqttState(), {
       wrapper: ({ children }) => (
         <MqttProvider
-          brokerUrl="mqtt://test.mosqu.org:1884"
-          options={{ connectTimeout: 2000 }}
+          host={"test.mosqu.org"} port={PORT} clientId="testing-mqtt-react-hooks"
+          options={{ timeout: 2 }}
         >
           {children}
         </MqttProvider>
@@ -40,12 +40,12 @@ describe('Connector wrapper', () => {
       wrapper,
     });
 
-    await waitFor(() => expect(result.current.client?.connected).toBe(true));
+    await waitFor(() => expect(result.current.client?.isConnected).toBe(true));
 
-    expect(result.current.connectionStatus).toBe('Connected');
+    expect(result.current.connectionStatus).toBe(ConnectionStatus.Connected);
 
     await act(async () => {
-      result.current.client?.end();
+      result.current.client?.disconnect();
     });
   });
 
@@ -53,20 +53,19 @@ describe('Connector wrapper', () => {
     const { result } = renderHook(() => useMqttState(), {
       wrapper: ({ children }) => (
         <MqttProvider
-          brokerUrl={URL}
-          options={{ clientId: 'testingMqttUsingProps' }}
+        host={HOST} port={PORT} clientId="testing-mqtt-react-hooks"
         >
           {children}
         </MqttProvider>
       ),
     });
 
-    await waitFor(() => expect(result.current.client?.connected).toBe(true));
+    await waitFor(() => expect(result.current.client?.isConnected).toBe(true));
 
     expect(result.current.connectionStatus).toBe(ConnectionStatus.Connected);
 
     await act(async () => {
-      result.current.client?.end();
+      result.current.client?.disconnect();
     });
   });
 });

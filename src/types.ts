@@ -1,4 +1,5 @@
-import type { MqttClient, IClientOptions, OnMessageCallback } from 'precompiled-mqtt';
+import MQTT, { Message } from 'paho-mqtt';
+import CustomClient from './CustomClient';
 
 export interface Error {
   name: string;
@@ -15,17 +16,19 @@ export enum ConnectionStatus {
 }
 
 export interface ConnectorProps {
-  brokerUrl: string;
-  options?: IClientOptions;
-  parserMethod?: (...message: MessageArguments) => string;
+  host: string;
+  port: number;
+  clientId: string;
+  options?:  MQTT.ConnectionOptions
+  parserMethod?: (message: Message) => string;
   children: React.ReactNode;
 }
 
 export interface IMqttContext {
   connectionStatus: ConnectionStatus;
-  error?: Error;
-  client?: MqttClient | null;
-  parserMethod?: (...message: MessageArguments) => string;
+  error?: Paho.MQTT.ErrorWithInvocationContext;
+  client?: CustomClient | null;
+  parserMethod?: (message: Message) => string;
 }
 
 export interface IMessageStructure {
@@ -39,14 +42,8 @@ export interface IMessage {
 
 export interface IUseSubscription {
   topic: string | string[];
-  client?: MqttClient | null;
+  client?: CustomClient | null;
   message?: IMessage;
   connectionStatus: ConnectionStatus;
-  error?: Error;
+  error?: Paho.MQTT.ErrorWithInvocationContext;
 }
-
-export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
-
-type ArgumentTypes<F extends Function> = F extends (...args: infer A) => any ? A : never;
-
-export type MessageArguments = ArgumentTypes<OnMessageCallback>;
