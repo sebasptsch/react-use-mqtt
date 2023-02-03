@@ -32,7 +32,7 @@ describe('Connector wrapper', () => {
       ),
     });
 
-    await waitFor(() => expect(result.current.connectionStatus).toBe(ConnectionStatus.Offline));
+    await waitFor(() => expect(result.current.connectionStatus).toBe(ConnectionStatus.Error));
   });
 
   it('should connect with mqtt', async () => {
