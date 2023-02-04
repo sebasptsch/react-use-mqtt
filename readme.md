@@ -22,7 +22,8 @@ import { MqttProvider } from "react-use-mqtt";
 export default function App() {
   return (
     <MqttProvider
-      brokerUrl="ws://localhost:9001"
+      host="localhost"
+      port="9001"
       options={{
         clientId: "react-use-mqtt",
         username: "admin",
