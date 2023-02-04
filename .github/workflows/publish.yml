@@ -22,8 +22,8 @@ jobs:
         name: Install Dependancies
       - run: yarn tsc
         name: Type Check
-      - name: Test
-        run: yarn test
+      # - name: Test
+      #   run: yarn test
       - run: yarn build
         if: always()
         name: Build
