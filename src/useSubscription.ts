@@ -7,24 +7,26 @@ import { IMqttContext as Context, IUseSubscription, IMessage } from "./types";
 import { Message } from "paho-mqtt";
 
 export default function useSubscription(
-  topic: string | string[],
-  options: Paho.MQTT.SubscribeOptions = {} as Paho.MQTT.SubscribeOptions
+  topic: string | string[]
 ): IUseSubscription {
   const { client, connectionStatus, parserMethod, error } =
     useContext<Context>(MqttContext);
 
-  const [message, setMessage] = useState<IMessage | undefined>(undefined);
+  const [message, setMessage] = useState<IMessage | undefined>(
+    undefined
+  );
 
   const subscribe = useCallback(async () => {
     if (Array.isArray(topic)) {
-      topic.forEach((t) => client?.subscribe(t, options));
+      topic.forEach((t) => client?.subscribe(t));
     } else {
-      client?.subscribe(topic, options);
+      client?.subscribe(topic);
     }
-  }, [client, options, topic]);
+  }, [client, topic]);
 
   const callback = useCallback(
     (message: Message) => {
+      console.log("callback triggered", message.destinationName, message.payloadString);
       if (
         [topic]
           .flat()

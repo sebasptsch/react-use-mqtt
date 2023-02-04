@@ -37,7 +37,7 @@ export default class CustomClient extends (EventEmitter2 as unknown as new () =>
     this.client.disconnect();
   }
 
-  subscribe(topic: string, options: MQTT.SubscribeOptions | undefined) {
+  subscribe(topic: string, options?: MQTT.SubscribeOptions | undefined) {
     this.client.subscribe(topic, options);
   }
 

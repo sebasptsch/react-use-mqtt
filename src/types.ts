@@ -45,5 +45,5 @@ export interface IUseSubscription {
   client?: CustomClient | null;
   message?: IMessage;
   connectionStatus: ConnectionStatus;
-  error?: Paho.MQTT.ErrorWithInvocationContext;
+  error?: MQTT.ErrorWithInvocationContext;
 }
