@@ -33,7 +33,6 @@ jobs:
         name: Test
 
       - run: pnpm build
-        if: always()
         name: Build
 
       # Publish NPM
