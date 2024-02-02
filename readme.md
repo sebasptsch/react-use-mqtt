@@ -10,6 +10,8 @@
 npm install react-use-mqtt
 # or
 yarn add react-use-mqtt
+# or
+pnpm add react-use-mqtt
 ```
 
 ## Usage
@@ -64,7 +66,7 @@ export default function YourApp() {
 ## Building
 
 ```bash
-yarn build
+pnpm build
 ```
 
 ## License
