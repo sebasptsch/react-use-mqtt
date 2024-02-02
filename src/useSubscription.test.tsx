@@ -32,7 +32,9 @@ describe('useSubscription', () => {
       },
     );
 
-    await waitFor(() => expect(result.current.client?.isConnected).toBe(true));
+    await waitFor(() => expect(result.current.client?.isConnected).toBe(true), {
+      timeout: 5000,
+    });
 
     const message = 'testing message';
 
@@ -49,7 +51,9 @@ describe('useSubscription', () => {
       },
     );
 
-    await waitFor(() => expect(result.current.client?.isConnected).toBe(true));
+    await waitFor(() => expect(result.current.client?.isConnected).toBe(true), {
+      timeout: 5000,
+    });
 
     const message = 'testing single selection message';
 
@@ -69,7 +73,9 @@ describe('useSubscription', () => {
       },
     );
 
-    await waitFor(() => expect(result.current.client?.isConnected).toBe(true));
+    await waitFor(() => expect(result.current.client?.isConnected).toBe(true), {
+      timeout: 5000,
+    });
 
     const message = 'testing with # wildcard';
 

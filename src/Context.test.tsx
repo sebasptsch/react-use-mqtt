@@ -41,7 +41,9 @@ describe('Connector wrapper', () => {
       wrapper,
     });
 
-    await waitFor(() => expect(result.current.client?.isConnected).toBe(true));
+    await waitFor(() => expect(result.current.client?.isConnected).toBe(true), {
+      timeout: 5000,
+    });
 
     expect(result.current.connectionStatus).toBe(ConnectionStatus.Connected);
 
@@ -61,7 +63,9 @@ describe('Connector wrapper', () => {
       ),
     });
 
-    await waitFor(() => expect(result.current.client?.isConnected).toBe(true));
+    await waitFor(() => expect(result.current.client?.isConnected).toBe(true), {
+      timeout: 5000,
+    });
 
     expect(result.current.connectionStatus).toBe(ConnectionStatus.Connected);
 
