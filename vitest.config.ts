@@ -8,6 +8,11 @@ export default defineConfig({
     environment: 'jsdom',
     setupFiles: ['./src/setupTest.tsx'],
     testTimeout: 10000,
+    poolOptions: {
+      threads: {
+        singleThread: true
+      }
+    },
     reporters: process.env.GITHUB_ACTIONS
       ? ['default', new GithubActionsReporter()]
       : 'default'

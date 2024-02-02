@@ -7,7 +7,7 @@ import React from 'react';
 import { renderHook, act, waitFor } from '@testing-library/react';
 
 import { useMqttState, MqttProvider, ConnectionStatus } from './';
-import { options } from './connection';
+import { connectionTimeout, options } from './connection';
 
 let wrapper: React.FC<{children: React.ReactNode}>;
 
@@ -42,7 +42,7 @@ describe('Connector wrapper', () => {
     });
 
     await waitFor(() => expect(result.current.client?.isConnected).toBe(true), {
-      timeout: 5000,
+      timeout: connectionTimeout,
     });
 
     expect(result.current.connectionStatus).toBe(ConnectionStatus.Connected);
@@ -64,7 +64,7 @@ describe('Connector wrapper', () => {
     });
 
     await waitFor(() => expect(result.current.client?.isConnected).toBe(true), {
-      timeout: 5000,
+      timeout: connectionTimeout,
     });
 
     expect(result.current.connectionStatus).toBe(ConnectionStatus.Connected);
