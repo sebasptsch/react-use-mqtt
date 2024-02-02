@@ -7,7 +7,7 @@ import React from 'react';
 import { cleanup, renderHook, waitFor } from '@testing-library/react';
 
 import { MqttProvider, useSubscription } from '.';
-import {  HOST, options, PORT } from './connection';
+import { options } from './connection';
 
 const TOPIC = 'mqtt/react/hooks/test';
 
@@ -16,7 +16,7 @@ let wrapper: React.FC<{children: React.ReactNode}>;
 describe('useSubscription', () => {
   beforeAll(() => {
     wrapper = ({ children }) => (
-      <MqttProvider host={HOST} port={PORT} clientId="testing-mqtt-react-hooks">
+      <MqttProvider {...options}>
         {children}
       </MqttProvider>
     );

@@ -1,7 +1,6 @@
-export const HOST = 'test.mosquitto.org';
-export const PORT = 1883;
+import { HostPortOrURI } from "./types";
+
 export const options = {
   clientId: `testing-mqtt-react-hooks`,
-  host: URL,
-  port: PORT,
-};
+  uri: `ws://test.mosquitto.org:8080/`,
+} satisfies HostPortOrURI

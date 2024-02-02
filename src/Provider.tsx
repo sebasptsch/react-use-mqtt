@@ -2,19 +2,18 @@ import React, { useEffect, useState, useMemo, useRef } from 'react';
 
 
 import MqttContext from './Context';
-import { ConnectorProps, IMqttContext, ConnectionStatus } from './types';
+import { ConnectorProps, IMqttContext, ConnectionStatus, isURI } from './types';
 import CustomClient from './CustomClient';
 
 
 
-export default function Connector({
-  children,
-  host,
-  port,
-  clientId,
-  options = { keepAliveInterval: 0 },
-  parserMethod,
-}: ConnectorProps) {
+export default function Connector(props: ConnectorProps) {
+  const {
+    children,
+    options = { keepAliveInterval: 0 },
+    parserMethod,
+  } = props;
+  
   // Using a ref rather than relying on state because it is synchronous
   const clientValid = useRef(false);
   const [connectionStatus, setStatus] = useState<ConnectionStatus>(ConnectionStatus.Offline);
@@ -27,8 +26,7 @@ export default function Connector({
       // before the client is asynchronously set
       clientValid.current = true;
       setStatus(ConnectionStatus.Connecting);
-      console.log(`attempting to connect to ${host}:${port}`);
-      const mqtt = new CustomClient(host,port, clientId);
+      const mqtt = new CustomClient(props);
       mqtt.connect(options)
       mqtt.on('connected', () => {
         console.debug('on connect');
@@ -50,14 +48,15 @@ export default function Connector({
         setError(undefined);
       });
     }
-  }, [client, clientValid, host, port, options]);
+  }, [client, clientValid, props]);
 
   // Only do this when the component unmounts
   useEffect(
     () => () => {
       if (client) {
         console.log('closing mqtt client');
-        client.disconnect()
+        if (client.isConnected)
+          client.disconnect()
         setClient(null);
         clientValid.current = false;
       }

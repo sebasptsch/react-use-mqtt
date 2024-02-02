@@ -7,14 +7,14 @@ import React from 'react';
 import { renderHook, act, waitFor } from '@testing-library/react';
 
 import { useMqttState, MqttProvider, ConnectionStatus } from './';
-import { HOST, options, PORT } from './connection';
+import { options } from './connection';
 
 let wrapper: React.FC<{children: React.ReactNode}>;
 
 describe('Connector wrapper', () => {
   beforeAll(() => {
     wrapper = ({ children }: {children: React.ReactNode}) => (
-      <MqttProvider host={HOST} port={PORT} clientId="testing-mqtt-react-hooks">
+      <MqttProvider {...options}>
         {children}
       </MqttProvider>
     );
@@ -24,7 +24,8 @@ describe('Connector wrapper', () => {
     const { result } = renderHook(() => useMqttState(), {
       wrapper: ({ children }) => (
         <MqttProvider
-          host={"test.mosqu.org"} port={PORT} clientId="testing-mqtt-react-hooks"
+          clientId={options.clientId}
+          uri='ws://test.mos.org:8080/' // wrong url
           options={{ timeout: 2 }}
         >
           {children}
@@ -53,7 +54,7 @@ describe('Connector wrapper', () => {
     const { result } = renderHook(() => useMqttState(), {
       wrapper: ({ children }) => (
         <MqttProvider
-        host={HOST} port={PORT} clientId="testing-mqtt-react-hooks"
+        {...options}
         >
           {children}
         </MqttProvider>

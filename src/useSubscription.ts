@@ -18,9 +18,11 @@ export default function useSubscription(
 
   const subscribe = useCallback(async () => {
     if (Array.isArray(topic)) {
-      topic.forEach((t) => client?.subscribe(t));
+      topic.forEach((t) => {
+        if (client?.isConnected)
+          client.subscribe(t)});
     } else {
-      client?.subscribe(topic);
+      if (client?.isConnected) client.subscribe(topic);
     }
   }, [client, topic]);
 

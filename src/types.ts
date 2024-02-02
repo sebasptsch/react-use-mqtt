@@ -15,13 +15,23 @@ export enum ConnectionStatus {
   Error = 'Error',
 }
 
-export interface ConnectorProps {
-  host: string;
-  port: number;
-  clientId: string;
+export type ConnectorProps = {
   options?:  MQTT.ConnectionOptions
   parserMethod?: (message: Message) => string;
   children: React.ReactNode;
+} & HostPortOrURI
+
+export type HostPortOrURI = {
+  host: string;
+  port: number;
+  clientId: string;
+} | {
+  uri: string;
+  clientId: string;
+}
+
+export const isURI = (hostPortOrURI: HostPortOrURI): hostPortOrURI is { uri: string; clientId: string } => {
+  return (hostPortOrURI as { uri: string; clientId: string }).uri !== undefined;
 }
 
 export interface IMqttContext {

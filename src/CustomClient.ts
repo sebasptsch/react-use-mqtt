@@ -1,5 +1,6 @@
 import EE from "eventemitter3";
 import MQTT, { ErrorWithInvocationContext, Message, MQTTError, Qos, WithInvocationContext } from "paho-mqtt";
+import { HostPortOrURI, isURI } from "./types";
 
 type MessageEvents = {
   connectionLost: (error: MQTTError) => void;
@@ -12,9 +13,16 @@ type MessageEvents = {
 export default class CustomClient extends EE<MessageEvents> {
   private client: MQTT.Client;
 
-  constructor(host: string, port: number,clientId: string) {
+  constructor(portUri: HostPortOrURI) {
     super();
-    this.client = new MQTT.Client(host, port, clientId);
+    
+    if (isURI(portUri)) {
+      this.client = new MQTT.Client(portUri.uri, portUri.clientId);
+      console.log("connecting to", portUri.uri, portUri.clientId)
+    } else {
+      this.client = new MQTT.Client(portUri.host, portUri.port, portUri.clientId);
+      console.log("connecting to", portUri.host, portUri.port, portUri.clientId)
+    }
     this.client.onConnectionLost = this.onConnectionLost.bind(this);
     this.client.onMessageArrived = this.onMessageArrived.bind(this);
     this.client.onMessageDelivered = this.onMessageDelivered.bind(this);
@@ -44,7 +52,7 @@ export default class CustomClient extends EE<MessageEvents> {
     this.client.unsubscribe(topic, options);
   }
 
-  publish(topic: string, payload: string | ArrayBuffer, qos?: Qos, retained?: boolean) {
+  publish(topic: string, payload: string | ArrayBuffer, qos: Qos = 0, retained: boolean = false) {
     this.client.send(topic, payload, qos, retained);
   }
 
