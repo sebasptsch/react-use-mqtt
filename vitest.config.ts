@@ -1,8 +1,6 @@
 import GithubActionsReporter from 'vitest-github-actions-reporter'
 
-/// <reference types="vitest" />
-
-import { defineConfig } from 'vite'
+import { defineConfig } from 'vitest/config'
 
 export default defineConfig({
   test: {

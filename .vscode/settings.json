@@ -1,3 +1,4 @@
 {
     "vitest.commandLine": "yarn test:run --",
+    "typescript.tsdk": "node_modules\\typescript\\lib",
 }

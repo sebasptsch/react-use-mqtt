@@ -1,6 +1,5 @@
-import EventEmitter2 from "eventemitter2";
+import EE from "eventemitter3";
 import MQTT, { ErrorWithInvocationContext, Message, MQTTError, Qos, WithInvocationContext } from "paho-mqtt";
-import TypedEmitter from "typed-emitter";
 
 type MessageEvents = {
   connectionLost: (error: MQTTError) => void;
@@ -10,7 +9,7 @@ type MessageEvents = {
   error: (o: ErrorWithInvocationContext) => void;
 };
 
-export default class CustomClient extends (EventEmitter2 as unknown as new () => TypedEmitter<MessageEvents>) {
+export default class CustomClient extends EE<MessageEvents> {
   private client: MQTT.Client;
 
   constructor(host: string, port: number,clientId: string) {

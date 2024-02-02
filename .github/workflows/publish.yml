@@ -8,28 +8,36 @@ jobs:
       packages: write
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-        name: Checkout
-      - uses: actions/setup-node@v3
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v2
+        name: Install pnpm
+        with:
+          version: 8
+
+      - uses: actions/setup-node@v4
         name: Setup Node
         with:
           always-auth: true
-          cache: "yarn"
-          node-version: "16.x"
+          cache: "pnpm"
+          node-version: "21.x"
           registry-url: "https://registry.npmjs.org"
 
-      - run: yarn install --frozen-lockfile
+      - run: pnpm install --frozen-lockfile
         name: Install Dependancies
-      - run: yarn tsc
+
+      - run: pnpm tsc --noEmit
         name: Type Check
-      # - name: Test
-      #   run: yarn test
-      - run: yarn build
+
+      - run: pnpm test
+        name: Test
+
+      - run: pnpm build
         if: always()
         name: Build
 
       # Publish NPM
-      - run: yarn publish
+      - run: pnpm publish
         name: Publish to NPMJS
         if: always()
         env:

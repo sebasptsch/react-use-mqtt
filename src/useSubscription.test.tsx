@@ -8,7 +8,6 @@ import { cleanup, renderHook, waitFor } from '@testing-library/react';
 
 import { MqttProvider, useSubscription } from '.';
 import {  HOST, options, PORT } from './connection';
-import { Message } from 'paho-mqtt';
 
 const TOPIC = 'mqtt/react/hooks/test';
 

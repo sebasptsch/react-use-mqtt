@@ -2,7 +2,7 @@ import React, { useEffect, useState, useMemo, useRef } from 'react';
 
 
 import MqttContext from './Context';
-import { Error, ConnectorProps, IMqttContext, ConnectionStatus } from './types';
+import { ConnectorProps, IMqttContext, ConnectionStatus } from './types';
 import CustomClient from './CustomClient';
 
 
@@ -39,7 +39,7 @@ export default function Connector({
       });
     
       mqtt.on('error', err => {
-        console.log(`Connection error: ${err}`);
+        console.log(`Connection error:`, err);
         setStatus(ConnectionStatus.Error);
         setError(err);
       });
