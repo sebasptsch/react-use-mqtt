@@ -37,8 +37,15 @@ jobs:
         name: Build
 
       # Publish NPM
-      - run: pnpm publish
-        name: Publish to NPMJS
-        if: always()
+      # - run: pnpm publish
+      #   name: Publish to NPMJS
+      #   if: always()
+      #   env:
+      #     NODE_AUTH_TOKEN: ${{ secrets.YARN_TOKEN }}
+      - name: create and publish versions
+        uses: changesets/action@v1
+        with:
+          publish: pnpm publish
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.YARN_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_TOKEN: ${{ secrets.YARN_TOKEN }}
