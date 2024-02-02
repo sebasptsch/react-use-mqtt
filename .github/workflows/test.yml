@@ -1,0 +1,39 @@
+name: Run Tests
+on:
+  pull_request:
+    branches:
+      - master
+      - main
+  workflow_call:
+  push:
+    branches:
+      - master
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v2
+        name: Install pnpm
+        with:
+          version: 8
+
+      - uses: actions/setup-node@v4
+        name: Setup Node
+        with:
+          always-auth: true
+          cache: "pnpm"
+          node-version: "21.x"
+          registry-url: "https://registry.npmjs.org"
+
+      - run: pnpm install --frozen-lockfile
+        name: Install Dependancies
+
+      - run: pnpm tsc --noEmit
+        name: Type Check
+
+      - run: pnpm test
+        name: Test
