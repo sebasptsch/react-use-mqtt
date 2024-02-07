@@ -43,7 +43,7 @@ jobs:
       - name: create and publish versions
         uses: changesets/action@v1
         with:
-          publish: pnpm publish && pnpm changeset tag
+          publish: pnpm publish:ci
           createGithubReleases: true
         env:
           GITHUB_TOKEN: ${{ secrets.CUSTOM_GITHUB_TOKEN }}

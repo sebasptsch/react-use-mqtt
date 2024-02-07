@@ -19,7 +19,8 @@
   "scripts": {
     "build": "tsup",
     "test": "vitest",
-    "test:run": "vitest run"
+    "test:run": "vitest run",
+    "publish:ci": "pnpm publish && pnpm changeset tag"
   },
   "dependencies": {
     "eventemitter3": "^5.0.1",
