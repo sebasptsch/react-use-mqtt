@@ -1,5 +1,11 @@
 # react-use-mqtt
 
+## 1.1.3
+
+### Patch Changes
+
+- 9da560d: version tag package
+
 ## 1.1.2
 
 ### Patch Changes
