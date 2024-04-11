@@ -1,6 +1,6 @@
 {
   "name": "react-use-mqtt",
-  "version": "1.1.3",
+  "version": "1.1.4",
   "description": "React Library for interfacing with the Paho-MQTT Library using hooks",
   "repository": "git@github.com:sebasptsch/react-use-mqtt",
   "author": "Sebastian Pietschner <sebastian.pietschner@gmail.com>",
