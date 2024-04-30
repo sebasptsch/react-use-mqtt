@@ -1,5 +1,11 @@
 # react-use-mqtt
 
+## 1.1.5
+
+### Patch Changes
+
+- b4f9d32: Update dependancies
+
 ## 1.1.4
 
 ### Patch Changes
