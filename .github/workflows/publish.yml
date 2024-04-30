@@ -46,6 +46,7 @@ jobs:
 
       - name: create and publish versions
         uses: changesets/action@v1
+        id: create_and_publish_versions
         with:
           publish: pnpm publish:ci
           createGithubReleases: true
@@ -54,5 +55,6 @@ jobs:
           NPM_TOKEN: ${{ secrets.YARN_TOKEN }}
           NODE_AUTH_TOKEN: ${{ secrets.YARN_TOKEN }}
       - name: Commit
+        if: steps.create_and_publish_versions.outputs.published
         run: |
           git commit -am "chore: publish"
