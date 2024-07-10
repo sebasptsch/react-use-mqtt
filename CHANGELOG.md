@@ -1,5 +1,11 @@
 # react-use-mqtt
 
+## 1.1.6
+
+### Patch Changes
+
+- c5461aa: bump pnpm version
+
 ## 1.1.5
 
 ### Patch Changes
