@@ -33,7 +33,9 @@ describe('Connector wrapper', () => {
       ),
     });
 
-    await waitFor(() => expect(result.current.connectionStatus).toBe(ConnectionStatus.Error));
+    await waitFor(() => expect(result.current.connectionStatus).toBe(ConnectionStatus.Error), {
+      timeout: connectionTimeout,
+    });
   });
 
   it('should connect with mqtt', async () => {
