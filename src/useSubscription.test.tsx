@@ -83,6 +83,8 @@ describe('useSubscription', () => {
 
     result.current.client?.publish(`${TOPIC}/match/test/wildcard`, message);
 
-    await waitFor(() => expect(result.current.message?.message).toBe(message));
+    await waitFor(() => expect(result.current.message?.message).toBe(message), {
+      timeout: connectionTimeout,
+    });
   });
 });
